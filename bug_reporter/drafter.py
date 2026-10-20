@@ -30,7 +30,6 @@ class BugReport(BaseModel):
     steps_to_reproduce: list[str]
     expected: str
     actual: str
-    environment: str
     severity: str
 
 
@@ -72,7 +71,6 @@ def to_markdown(report: BugReport) -> str:
         f"## Steps to reproduce\n{steps}\n\n"
         f"## Expected behaviour\n{report.expected}\n\n"
         f"## Actual behaviour\n{report.actual}\n\n"
-        f"## Environment\n{report.environment}\n\n"
         f"**Severity:** {report.severity}\n\n"
         "## Screenshots / Video\n_To be attached._\n"
     )
