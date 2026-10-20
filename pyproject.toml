@@ -1,0 +1,22 @@
+[project]
+name = "bug-reporter"
+version = "0.1.0"
+description = "Turn a bug description (and optional screenshot) into a GitHub issue on a project board"
+requires-python = ">=3.11"
+
+dependencies = [
+    "typer",
+    "google-genai",
+    "pydantic",
+    "python-dotenv",
+]
+
+[project.scripts]
+bugreport = "bug_reporter.cli:app"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["bug_reporter"]
