@@ -20,7 +20,10 @@ def report(
         None, "--shot", "-s", exists=True, dir_okay=False, help="Screenshot of the bug."
     ),
     repo: str | None = typer.Option(None, "--repo", "-r", help="owner/name; overrides GITHUB_REPO."),
-    project: str | None = typer.Option(None, "--project", "-p", help="Board title; overrides GITHUB_PROJECT."),
+    board: str | None = typer.Option(
+        None, "--board", "-b", help="Board key, e.g. rama or cbhi; reads <KEY>_GITHUB_PROJECT from .env."
+    ),
+    project: str | None = typer.Option(None, "--project", "-p", help="Board title; overrides --board and GITHUB_PROJECT."),
     assign_me: bool = typer.Option(False, "--me", help="Assign the issue to yourself."),
     yes: bool = typer.Option(False, "--yes", "-y", help="Skip the confirmation prompt."),
     open_browser: bool = typer.Option(False, "--open", "-o", help="Open the issue in your browser."),
@@ -30,6 +33,12 @@ def report(
     if not repo:
         typer.secho("Set GITHUB_REPO in .env or pass --repo owner/name.", fg="red")
         raise typer.Exit(1)
+    if not project and board:
+        env_var = f"{board.upper()}_GITHUB_PROJECT"
+        project = os.getenv(env_var)
+        if not project:
+            typer.secho(f"Set {env_var} in .env to use --board {board}.", fg="red")
+            raise typer.Exit(1)
     project = project or os.getenv("GITHUB_PROJECT") or None
 
     typer.echo("Drafting bug report...")

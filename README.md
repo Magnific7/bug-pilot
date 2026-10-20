@@ -17,14 +17,15 @@ The target repo needs a `bug` label (GitHub creates one by default).
 ## Usage
 
 ```bash
-bugreport "Export button does nothing on Safari after picking CSV" --shot ~/Desktop/err.png --open
+bugreport "Export button does nothing on Safari after picking CSV" --shot ~/Desktop/err.png --board rama --open
 ```
 
 | Flag | Meaning |
 |------|---------|
 | `--shot, -s` | Screenshot that Gemini reads to write a better report |
 | `--repo, -r` | Overrides `GITHUB_REPO` |
-| `--project, -p` | Overrides `GITHUB_PROJECT` (the board's title) |
+| `--board, -b` | Picks a board from `.env`: `--board rama` reads `RAMA_GITHUB_PROJECT` |
+| `--project, -p` | Board title; overrides `--board` and `GITHUB_PROJECT` |
 | `--me` | Assigns the issue to you |
 | `--yes, -y` | Skips the confirmation prompt |
 | `--open, -o` | Opens the new issue in your browser |
