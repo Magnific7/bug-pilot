@@ -21,7 +21,7 @@ def report(
     ),
     repo: str | None = typer.Option(None, "--repo", "-r", help="owner/name; overrides GITHUB_REPO."),
     board: str | None = typer.Option(
-        None, "--board", "-b", help="Board key, e.g. rama or cbhi; reads <KEY>_GITHUB_PROJECT from .env."
+        None, "--board", "-b", help="Board key, e.g. rama or cbhi; reads <KEY>_GITHUB_PROJECT and <KEY>_GITHUB_REPO from .env."
     ),
     project: str | None = typer.Option(None, "--project", "-p", help="Board title; overrides --board and GITHUB_PROJECT."),
     assign_me: bool = typer.Option(False, "--me", help="Assign the issue to yourself."),
@@ -29,16 +29,17 @@ def report(
     open_browser: bool = typer.Option(False, "--open", "-o", help="Open the issue in your browser."),
 ) -> None:
     """Draft a bug report with AI and file it as a GitHub issue."""
+    if board:
+        key = board.upper()
+        repo = repo or os.getenv(f"{key}_GITHUB_REPO")
+        project = project or os.getenv(f"{key}_GITHUB_PROJECT")
+        if not project:
+            typer.secho(f"Set {key}_GITHUB_PROJECT in .env to use --board {board}.", fg="red")
+            raise typer.Exit(1)
     repo = repo or os.getenv("GITHUB_REPO")
     if not repo:
         typer.secho("Set GITHUB_REPO in .env or pass --repo owner/name.", fg="red")
         raise typer.Exit(1)
-    if not project and board:
-        env_var = f"{board.upper()}_GITHUB_PROJECT"
-        project = os.getenv(env_var)
-        if not project:
-            typer.secho(f"Set {env_var} in .env to use --board {board}.", fg="red")
-            raise typer.Exit(1)
     project = project or os.getenv("GITHUB_PROJECT") or None
 
     typer.echo("Drafting bug report...")

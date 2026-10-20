@@ -24,7 +24,7 @@ bugreport "Export button does nothing on Safari after picking CSV" --shot ~/Desk
 |------|---------|
 | `--shot, -s` | Screenshot that Gemini reads to write a better report |
 | `--repo, -r` | Overrides `GITHUB_REPO` |
-| `--board, -b` | Picks a board from `.env`: `--board rama` reads `RAMA_GITHUB_PROJECT` |
+| `--board, -b` | Picks a board from `.env`: `--board rama` reads `RAMA_GITHUB_PROJECT` and `RAMA_GITHUB_REPO` |
 | `--project, -p` | Board title; overrides `--board` and `GITHUB_PROJECT` |
 | `--me` | Assigns the issue to you |
 | `--yes, -y` | Skips the confirmation prompt |
