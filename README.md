@@ -16,8 +16,11 @@ The target repo needs a `bug` label (GitHub creates one by default).
 
 ## Usage
 
+Run `bugreport` with no arguments and it asks for the bug, a screenshot (drag the file into
+the terminal) and the board. Or pass everything at once:
+
 ```bash
-bugreport "Export button does nothing on Safari after picking CSV" --shot ~/Desktop/err.png --board rama --open
+bugreport "Export button does nothing on Safari after picking CSV" --shot ~/Desktop/err.png --board rama
 ```
 
 | Flag | Meaning |
@@ -28,7 +31,7 @@ bugreport "Export button does nothing on Safari after picking CSV" --shot ~/Desk
 | `--project, -p` | Board title; overrides `--board` and `GITHUB_PROJECT` |
 | `--me` | Assigns the issue to you |
 | `--yes, -y` | Skips the confirmation prompt |
-| `--open, -o` | Opens the new issue in your browser |
+| `--no-open` | Doesn't open the new issue in your browser (it opens by default) |
 
 GitHub's API can't attach images or videos to issues, so the screenshot is used
 only to write the report. Drag the screenshot and video into the issue in the browser.

@@ -8,14 +8,32 @@ from dotenv import load_dotenv
 from bug_reporter.drafter import draft_report, to_markdown
 from bug_reporter.github import create_issue
 
-load_dotenv()
+# Load the project's .env no matter which folder the command is run from
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 app = typer.Typer(add_completion=False)
 
 
+def _ask_screenshot() -> Path | None:
+    """Prompt for a screenshot path; dragging a file into the terminal pastes its path."""
+    while True:
+        raw = typer.prompt(
+            "Screenshot (drag the file here, or press Enter to skip)",
+            default="", show_default=False,
+        ).strip().strip("'\"").replace("\\ ", " ")
+        if not raw:
+            return None
+        path = Path(raw).expanduser()
+        if path.is_file():
+            return path
+        typer.secho(f"No file at {path}, try again.", fg="red")
+
+
 @app.command()
 def report(
-    description: str = typer.Argument(..., help="What went wrong, in your own words."),
+    description: str | None = typer.Argument(
+        None, help="What went wrong, in your own words. Asked for if left out."
+    ),
     screenshot: Path | None = typer.Option(
         None, "--shot", "-s", exists=True, dir_okay=False, help="Screenshot of the bug."
     ),
@@ -26,9 +44,15 @@ def report(
     project: str | None = typer.Option(None, "--project", "-p", help="Board title; overrides --board and GITHUB_PROJECT."),
     assign_me: bool = typer.Option(False, "--me", help="Assign the issue to yourself."),
     yes: bool = typer.Option(False, "--yes", "-y", help="Skip the confirmation prompt."),
-    open_browser: bool = typer.Option(False, "--open", "-o", help="Open the issue in your browser."),
+    open_browser: bool = typer.Option(True, "--open/--no-open", "-o", help="Open the issue in your browser."),
 ) -> None:
     """Draft a bug report with AI and file it as a GitHub issue."""
+    if not description:
+        description = typer.prompt("What's the bug?")
+        if not screenshot:
+            screenshot = _ask_screenshot()
+    if not board and not project:
+        board = typer.prompt("Which board? (rama/cbhi)").strip().lower()
     if board:
         key = board.upper()
         repo = repo or os.getenv(f"{key}_GITHUB_REPO")
